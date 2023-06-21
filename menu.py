@@ -1,4 +1,4 @@
-class Menu: 
+class Menu:
     def __init__ (self):
         self.food = [("Tom Yam Seafood","*",28.90), ("Fish n Chips","",38.90),("Nasi Lemak Ayam","*",22.90),("Chicken Chop","",35.90)]
         self.beverage = [("Limau Ais", 8.90), ("Bandung Ais", 8.90), ("Teh Ais", 8.90)]
@@ -14,14 +14,14 @@ class Menu:
             self.beverage.append((name, price))
         else:
             return ("Invalid choice")
-        
+
     def delete_menu (self, categories, name):
         if categories == "food":
             for dish in self.food:
                 if dish[0] == name:
                     self.food.remove(dish)
                     break
-                    
+
         elif categories == "beverage":
             for drink in self.beverage:
                 if drink[0] == name:
@@ -29,7 +29,7 @@ class Menu:
                     break
         else:
             return "This category is not available"
-        
+
     def display_menu (self):
         print("\n------Food Menu------")
         print("Remark '*' = Spicy food\n")
@@ -58,10 +58,10 @@ class Restaurant:
         elif choice == "2":
             self.waiter_ui()
         elif choice == "3":
-            return 
+            return
         else:
             return ("Invalid choice")
-        
+
     def customer_ui(self):
         self.menu.display_menu()
         print()
@@ -78,7 +78,7 @@ class Restaurant:
             else:
                 print("Invalid password")
                 self.main()
-            
+
         print("\n---Welcome to waiter interface---\n")
         print("1. Add food into menu")
         print("2. Add beverage into menu")
@@ -104,7 +104,7 @@ class Restaurant:
             self.main()
         else:
             print("Invalid choice")
-    
+
     def add_food(self):
         print("\nAdd new dish into menu")
         category = "food"
@@ -123,11 +123,11 @@ class Restaurant:
         self.menu.add_beverage(category, name, price)
         print(f"{name} is added into the beverage menu")
         self.waiter_ui()
-        
+
     def delete(self):
         print("\nDelete item in menu")
         category = input("Please choose menu categories (food/beverage):")
-        name = input("Enter the name of the new menu:")
+        name = input("Enter the name of the food or beverage:")
         self.menu.delete_menu(category, name)
         print(f"{name} is removed from the {category} menu")
         self.waiter_ui()
