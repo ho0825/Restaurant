@@ -40,7 +40,7 @@ def book_table ():
         date = input ("Date: ")
         ptd = phone + "   " + time + "   " + date
         reservation [username] = ptd
-        file = open ("Reservation.txt", "w")
+        file = open ("Reservation.txt", "a")
         for i in reservation:
             print (i, reservation[i])
             file.write (i)
@@ -50,15 +50,36 @@ def book_table ():
     elif (choice == 2 or choice == 3):
         file = open ("Reservation.txt", "r")
         while (True):
-            list_of_reservation = file.readline().splitlines()
+            list_of_reservation = file.readline().splitlines ()
             if len (list_of_reservation) == 0:
                 break
-            customer.append(list_of_reservation)
-        print (customer)
-        for i in list_of_reservation:
-            print (i)
+            temp_list.append(list_of_reservation)
+        file.close ()
+        temp1 = " "
+        for i in range(len(temp_list)):
+            temp = temp_list [i][0]
+            if (i%2 == 0):
+                customer.append (temp)
+                continue
+            else:
+                detail.append (temp)
+
+        for i in range (len(customer)):
+            print (customer[i], detail [i])
+
         if (choice == 3):
             delete_choice = int (input ("Which reservation you want to delete from the list?:"))
+            del customer [delete_choice]
+            del detail [delete_choice]
+            file = open ("Reservation.txt", "w")
+            for i in range (len(customer)):
+                file.write (customer[i])
+                file.write ("\n")
+                file.write (detail [i])
+                if i == (len (customer) -1):
+                    file.write ("\n")
+
+
 
 
 
@@ -112,6 +133,7 @@ def table_reservation ():
         else:
             print ("Invalid Input")
 
+temp_list = list ()
 detail = list ()
 customer = list()
 reservation = dict ()
