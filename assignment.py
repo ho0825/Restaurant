@@ -3,7 +3,7 @@ def customerOrderPlacement (Order_num):
     Order_Method_list = ["dinein", "takeout", "delivery"]
     print ("Would you like to\n1) Dine in\n2) Takeout\n3) Delivery\n4) Back")
     cat_list = [0,1,2,3]
-    choice = int (input ())
+    choice = int (input ("Select an option:"))
     if (choice == 4):
         return
     Order_Method = Order_Method_list[choice]
@@ -117,7 +117,7 @@ def Check_Waiting ():
 def table_reservation ():
     j =1
     while (j == 1):
-        print ("1) Booking a table\n2) Waiting List\n3) Next waiting customer\n4) Waiting list\n5) Back")
+        print ("1) Booking a table\n2) Waiting List\n3) Next waiting customer\n4) Check Waiting list\n5) Back")
         choice = int(input ("Select an option: "))
 
         if (choice == 1):
@@ -133,11 +133,30 @@ def table_reservation ():
         else:
             print ("Invalid Input")
 
+#variables initialization
+
 temp_list = list ()
 detail = list ()
 customer = list()
 reservation = dict ()
 waiting = dict ()
 Order_taken = 0
-table_reservation ()
-customerOrderPlacement (Order_taken)
+list_of_mainChoice = [1,2,3,4,5,6]
+
+print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Payment\n4) Menu5) Print Report\n6) Exit")
+mainChoice = int (input ("Select an option:"))
+
+while (mainChoice != 6):
+
+    if (mainChoice == 1):
+        customerOrderPlacement (Order_taken)
+    elif (mainChoice == 2):
+        table_reservation ()
+
+    print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Payment\n4) Menu\n5) Print Report\n6) Exit")
+    mainChoice = int (input ("Select an option:"))
+
+    if mainChoice not in list_of_mainChoice:
+        print ("Invalid Input")
+
+
