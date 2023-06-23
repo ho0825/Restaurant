@@ -1,7 +1,7 @@
 class Menu:
     def __init__ (self):
         self.food = [("Tom Yam Seafood","*",28.90), ("Fish n Chips","",38.90),("Nasi Lemak Ayam","*",22.90),("Chicken Chop","",35.90)]
-        self.beverage = [("Limau Ais", 8.90), ("Bandung Ais", 8.90), ("Teh Ais", 8.90)]
+        self.beverage = [("Limau Ais", 78.90), ("Bandung Ais", 88.90), ("Teh Ais", 98.90)]
 
     def add_food (self, categories, name, remark, price):
         if categories == "food":
