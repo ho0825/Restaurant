@@ -152,19 +152,24 @@ class Restaurant ():
 
 
 
-def customerOrderPlacement (Order_num):
+def customerOrderPlacement (Order_num, table_list, takeout_list):
 
     Food_List = list ()
     Price_List = list ()
     Quantity_List = list ()
 
-    print ("Would you like to\n1) Dine in\n2) Takeout\n3) Delivery\n4) Back")
+    print ("Would you like to\n1) Dine in\n2) Takeout\n3) Back")
 
     OrderMethod = int (input ("Select an option:"))
-    if OrderMethod == 1:
-        Tablenum = int(input ("Enter table number: "))
 
-    if (OrderMethod == 4):
+    if OrderMethod == 1:
+        while True:
+            print ("Occupied Table: ", table_list)
+            Tablenum = int(input ("Enter table number: "))
+            if Tablenum not in table_list:
+                break
+
+    if (OrderMethod == 3):
         return
 
     End_Order = 0
@@ -172,19 +177,23 @@ def customerOrderPlacement (Order_num):
 
     while (End_Order != 1):
       #  category = int (input (""))
-        category = int (input("Select a category to order \n1. Food\n2. Beverage\n3. Check Order\n4. End Order\n5. Exit\n"))
+        category = int (input("Select a category to order \n1. Food\n2. Beverage\n3. Check Order\n4. Delete Item\n5. End Order\n6. Exit\n"))
         if category == 3:
             display_order_list (Food_List, Price_List, Quantity_List)
             continue
-        if category == 4:
+        elif category == 4:
+            display_order_list (Food_List, Price_List, Quantity_List)
+            delete_item (Food_List, Price_List, Quantity_List)
+            continue
+        elif category == 5:
             break
-        if category == 5:
+        elif category == 6:
             return
         Order_Status = 1
         while (Order_Status == 1):
 
             restaurant.menu.display_menu (category)
-            foodChoice = int(input("Choose a food you want to order/ choose 0 to back: "))
+            foodChoice = int(input("Choose a food you want to order / choose 0 to back: "))
             if (foodChoice == 0):
                 break
             quantity = int(input("Quantity: "))
@@ -196,20 +205,34 @@ def customerOrderPlacement (Order_num):
 
             Order_Status = -1
             while (Order_Status != 0 and Order_Status != 1):
-                Order_Status = int(input("Continue to order?: "))
+                Order_Status = int(input("Continue to order (0: back, 1: continue) ? : "))
 
 
 
-    confirmChoice = int(input("Confirm the order?\n"))
+    confirmChoice = int(input("Confirm the order (press 1 to confirm) ?\n"))
     if (confirmChoice != 1):
         print ("Invalid input")
     elif (confirmChoice == 1):
         if (OrderMethod == 1):
             updateFile (OrderMethod, Food_List, Price_List, Quantity_List, Order_num, Tablenum)
-
+            table_list.append(Tablenum)
         else :
             updateFile (OrderMethod, Food_List, Price_List, Quantity_List, Order_num)
+            takeout_list.append (Order_num)
+        return int (Order_num) + 1
 
+
+def delete_item (Food_List, Price_List, Quantity_List):
+    if len (Food_List) == 0:
+        print ("No item to delete")
+        return
+    deleteChoice = int (input ("Which item would you like to delete?:\n"))
+    if deleteChoice >0 and deleteChoice <= (len(Food_List)):
+        del Food_List [deleteChoice-1]
+        del Price_List [deleteChoice-1]
+        del Quantity_List [deleteChoice-1]
+    else:
+        print ("Invalid input")
 
 
 def display_order_list (Food_List, Price_List, Quantity_List):
@@ -232,6 +255,8 @@ def updateFile (OrderMethod, Food_List, Price_List, Quantity_List, Order_num, Ta
     file.close ()
 
 def book_table ():
+
+    temp_list = list ()
 
     choice = int(input ("Reservation Section:\n1)Reserve Table\n2)Check Reservation\n3)Remove Reservation\n4)Back\n"))
     if (choice == 1):
@@ -256,7 +281,6 @@ def book_table ():
                 break
             temp_list.append(list_of_reservation)
         file.close ()
-        temp1 = " "
         for i in range(len(temp_list)):
             temp = temp_list [i][0]
             if (i%2 == 0):
@@ -279,10 +303,6 @@ def book_table ():
                 file.write (detail [i])
                 if i == (len (customer) -1):
                     file.write ("\n")
-
-
-
-
 
     file.close ()
 
@@ -314,8 +334,7 @@ def Check_Waiting ():
 
 
 def table_reservation ():
-    j =1
-    while (j == 1):
+    while True:
         print ("1) Booking a table\n2) Waiting List\n3) Next waiting customer\n4) Check Waiting list\n5) Back")
         choice = int(input ("Select an option: "))
 
@@ -332,33 +351,92 @@ def table_reservation ():
         else:
             print ("Invalid Input")
 
+def pending_order (table_list, takeout_list):
+    while True:
+        print ("1. Check for available order pending\n2. Delete order\n3. Back\n")
+        pendingChoice = int (input ("Select an option:\n"))
+        if pendingChoice == 1:
+            Check_pending (table_list, takeout_list)
+
+        elif pendingChoice == 2:
+            Delete_pending (table_list, takeout_list)
+
+        elif pendingChoice == 3:
+            return
+
+        else:
+            print ("Invalid Input")
+
+
+def Check_pending (table_list, takeout_list):
+
+    temp_list = list ()
+    foodItem = list ()
+    quantityItem = list ()
+    priceItem = list ()
+
+    print ("1. Dine\n2. Takeout\n")
+    checkOption = int(input("Select an option:"))
+    if checkOption == 1:
+        print (table_list)
+        TableNum = int (input ("Select a table number:"))
+        if TableNum in table_list:
+            fileName = "T"+TableNum+".txt"
+            file.open (fileName, "r")
+            while (True):
+                list_from_file = file.readline().splitlines ()
+                if len (list_from_file) == 0:
+                    break
+                temp_list.append(list_from_file)
+                num = 1
+                for i,j,k in range(len(temp_list)):
+
+                    print (f"{no}\t{i}\t{j}\t{k}")
+
+
+'''
+                    temp = temp_list [i][0]
+                    foodItem.append (temp)
+                    temp = temp_list [j][0]
+                    quantityItem.append (temp)
+                    temp = temp_list [k][0]
+                    priceItem.append (temp)
+'''
+
+    #elif checkOption == 2:
+
+def Delete_pending ():
+    pass
 #variables initialization
 
-temp_list = list ()
+
 detail = list ()
 customer = list()
+table_list = list ()
+takeout_list = list ()
 reservation = dict ()
 waiting = dict ()
 Order_num = 1
 list_of_mainChoice = [1,2,3,4,5,6]
+
 restaurant = Restaurant()
 
-print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Payment\n4) Menu\n5) Print Report\n6) Exit")
-mainChoice = int (input ("Select an option:"))
 
 
-while (mainChoice != 6):
-
-    if (mainChoice == 1):
-        customerOrderPlacement (Order_num)
-        Order_num += 1
-    elif (mainChoice == 2):
-        table_reservation ()
-    elif (mainChoice == 4):
-        restaurant.main()
-
-    print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Payment\n4) Menu\n5) Print Report\n6) Exit")
+while True:
+    print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Check List of Order\n4) Payment\n5) Menu\n6) Print Report\n7) Exit")
     mainChoice = int (input ("Select an option:"))
+
+    if mainChoice == 1:
+        Order_num = customerOrderPlacement (Order_num, table_list, takeout_list)
+    elif mainChoice == 2:
+        table_reservation ()
+    elif mainChoice == 3:
+        pending_order (table_list, takeout_list)
+    elif mainChoice == 5:
+        restaurant.main()
+    elif mainChoice == 7:
+        break
 
     if mainChoice not in list_of_mainChoice:
         print ("Invalid Input")
