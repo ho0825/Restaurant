@@ -219,7 +219,7 @@ def customerOrderPlacement (Order_num, table_list, takeout_list):
         else :
             updateFile (OrderMethod, Food_List, Price_List, Quantity_List, Order_num)
             takeout_list.append (Order_num)
-        return int (Order_num) + 1
+        return Order_num + 1
 
 
 def delete_item (Food_List, Price_List, Quantity_List):
@@ -359,7 +359,8 @@ def pending_order (table_list, takeout_list):
             Check_pending (table_list, takeout_list)
 
         elif pendingChoice == 2:
-            Delete_pending (table_list, takeout_list)
+            Option, Num = Check_pending (table_list, takeout_list)
+            Delete_pending (Option, Num, table_list, takeout_list)
 
         elif pendingChoice == 3:
             return
@@ -370,43 +371,84 @@ def pending_order (table_list, takeout_list):
 
 def Check_pending (table_list, takeout_list):
 
+    displayList = list()
     temp_list = list ()
     foodItem = list ()
     quantityItem = list ()
     priceItem = list ()
 
+
     print ("1. Dine\n2. Takeout\n")
     checkOption = int(input("Select an option:"))
     if checkOption == 1:
         print (table_list)
-        TableNum = int (input ("Select a table number:"))
-        if TableNum in table_list:
-            fileName = "T"+TableNum+".txt"
-            file.open (fileName, "r")
-            while (True):
-                list_from_file = file.readline().splitlines ()
-                if len (list_from_file) == 0:
-                    break
-                temp_list.append(list_from_file)
-                num = 1
-                for i,j,k in range(len(temp_list)):
+        Num = int (input ("Select a table number:"))
+        if Num in table_list:
+            fileName = "T"+str(Num)+".txt"
+            file = open (fileName, "r")
+        else:
+            return
 
-                    print (f"{no}\t{i}\t{j}\t{k}")
+    elif checkOption == 2:
+        print (takeout_list)
+        Num = int (input("Select a takeout number: "))
+        if Num in takeout_list:
+            fileName = str(Num)+".txt"
+            file = open (fileName, "r")
+        else:
+            print ("Takeout Number doesn't appear in the list")
+            return
+    elif checkOption == 3:
+        return
+    while (True):
+        list_from_file = file.readline().splitlines ()
+        if len (list_from_file) == 0:
+            break
+        temp_list.append(list_from_file)
+    print (temp_list)
+    for i in range(len(temp_list)):
+        temp = temp_list [i][0]
+        displayList.append (temp)
 
+    number = 1
+    y = 1
+    for z in displayList:
+        if (y == 1):
+            i = z
+        elif (y == 2):
+            j = z
+        elif y == 3:
+            z = float (z)
+            print (number,".\t",i,"\t\t",j,"\t","%.2f"%z)
+            y = 0
+            number+=1
+        y+=1
+    return checkOption, Num
 
-'''
-                    temp = temp_list [i][0]
-                    foodItem.append (temp)
-                    temp = temp_list [j][0]
-                    quantityItem.append (temp)
-                    temp = temp_list [k][0]
-                    priceItem.append (temp)
-'''
 
     #elif checkOption == 2:
 
-def Delete_pending ():
-    pass
+def Delete_pending (checkOption=0,Num = 0, table_list=0, takeout_list=0):
+
+    print("Are you sure you want to delete this order?\n")
+    Confirm = int(input("Confirm?"))
+    if Confirm == 1:
+        if checkOption == 1:
+            if Num in table_list:
+                for i in range (len (table_list)):
+                    if table_list [i] == Num:
+                        del table_list [i]
+
+        elif checkOption == 2:
+            if Num in takeout_list:
+                for i in range (len (takeout_list)):
+                    if takeout_list [i] == Num:
+                        del takeout_list [i]
+        return
+    else:
+        print ("Invalid input")
+
+
 #variables initialization
 
 
