@@ -96,7 +96,7 @@ class Restaurant ():
         print("3. Delete item in menu")
         print("4. View menu")
         print("5. Exit\n")
-        waiter_choice = input("Please enter your choice (1-4):")
+        waiter_choice = input("Please enter your choice (1-5):")
 
         if waiter_choice == "1":
              self.add_food()
@@ -112,7 +112,7 @@ class Restaurant ():
                 self.waiter_ui()
         elif waiter_choice == "5":
             self.waiter_authenticated = False
-            main_func(self)
+            main_func()
         else:
             print("Invalid choice")
 
@@ -541,7 +541,7 @@ def table_reservation ():
 
 
 def Report(): #check the report
-    x=int(input("1. Daily Report \n2. Monthly Report \n3. Reset Daily Report \n4. Reset Monthly Report \n5. Exit"))
+    x=int(input("1. Daily Report \n2. Monthly Report \n3. Reset Daily Report \n4. Reset Monthly Report \n5. Exit \n"))
 
     if(x==1):
         myfiles=open("Daily Report.txt","r")
@@ -581,7 +581,7 @@ def Report(): #check the report
 
     elif(x==5):
         print(" ")
-        return
+        main_func()
 
     else:
         print("Invalid input")
@@ -754,8 +754,8 @@ def main_func():
         elif mainChoice == 5:
             restaurant.waiter_authenticated = False
             main_func()
-        if mainChoice not in list_of_mainChoice:
-            print ("Invalid Input")
+        else:
+            main_func()
 
     elif choice == "3":
         return 0
