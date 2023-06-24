@@ -1,0 +1,6 @@
+Item				Qty	Price
+
+1. Tom Yam Seafood		1	28.9
+Table   :1
+Time    :2023-06-24 23:24:17.165645
+

@@ -2,13 +2,10 @@ import os
 import os.path
 from datetime import datetime, timedelta
 
-
-Order_num=0
-
 class Menu:
     def __init__ (self):
-        self.food =     [("1. Tom Yam Seafood   ","*",28.90), ("2. Fish n Chips     ","",38.90),("3. Nasi Lemak Ayam    ","*",22.90),("4. Chicken Chop  ","",35.90)]
-        self.beverage = [("1. Limau Ais         ", 3.90),     ("2. Bandung Ais      ", 2.90), ("3. Teh Ais          ", 1.90)]
+        self.food =     [("1. Tom Yam Seafood","*",28.90), ("2. Fish n Chips","",38.90),("3. Nasi Lemak Ayam","*",22.90),("4. Chicken Chop","",35.90)]
+        self.beverage = [("1. Limau Ais", 3.90),     ("2. Bandung Ais", 2.90), ("3. Teh Ais", 1.90)]
 
     def add_food (self, categories, name, remark, price):
         if categories == "food":
@@ -65,48 +62,59 @@ class Menu:
             for (name, price) in self.beverage:
                 print(f"{name} : RM {price}")
 
+    def full_menu (self):
+        print("\n------Food Menu------")
+        print("Remark '*' = Spicy food\n")
+        for (name, remark, price) in self.food:
+            print (f"{name} {remark}: RM {price}")
 
-class Restaurant():
+        print("\n-----Beverage Menu-----")
+        for (name, price) in self.beverage:
+            print(f"{name} : RM {price}")
+
+
+class Restaurant ():
     def __init__(self):
         self.menu = Menu()
         self.waiter_authenticated = False
 
-
-    def main(self):
-        print("\n***Welcome to Restaurant M-01***\n")
-        print("1. Customers")
-        print("2. Waiters")
-        print("3. Exit\n")
-        choice = input("Please enter your choice (1-3):")
-
-        if choice == "1":
-            self.customer_ui()
-        elif choice == "2":
-            self.waiter_ui()
-        elif choice == "3":
-            return
-        else:
-            return ("Invalid choice")
-
     def customer_ui(self):
-        self.menu.display_menu()
+        self.menu.full_menu()
         print()
-        exit = input("Exit to main page (Y):")
+        choice = int(input("Exit to main page (0) or make payment (1):"))
 
-        if exit == "Y" or "y":
-            self.main()
+        if choice == 0:
+            main_func()
+
+        elif choice == 1:
+            Payment()
 
     def waiter_ui(self):
-        if not self.waiter_authenticated:
-            password = input("Please enter password:")
-            if password == "123456":
-                self.waiter_authenticated = True
-            else:
-                print("Invalid password")
-                self.main()
+        print("\n---Welcome to waiter interface---\n")
+        print("1. Add food into menu")
+        print("2. Add beverage into menu")
+        print("3. Delete item in menu")
+        print("4. View menu")
+        print("5. Exit\n")
+        waiter_choice = input("Please enter your choice (1-4):")
 
-        ui()
-
+        if waiter_choice == "1":
+             self.add_food()
+        elif waiter_choice == "2":
+             self.add_beverage()
+        elif waiter_choice == "3":
+            self.menu.full_menu()
+            self.delete()
+        elif waiter_choice == "4":
+            self.menu.full_menu()
+            exit = input("Exit to waiter interface (Y):")
+            if exit == "Y" or "y":
+                self.waiter_ui()
+        elif waiter_choice == "5":
+            self.waiter_authenticated = False
+            main_func(self)
+        else:
+            print("Invalid choice")
 
     def add_food(self):
         print("\nAdd new dish into menu")
@@ -134,8 +142,6 @@ class Restaurant():
         self.menu.delete_menu(category, name)
         print(f"{name} is removed from the {category} menu")
         self.waiter_ui()
-
-
 
 def customerOrderPlacement (Order_num, table_list, takeout_list):
 
@@ -211,7 +217,10 @@ def customerOrderPlacement (Order_num, table_list, takeout_list):
             updateFile (OrderMethod, Food_List, Price_List, Quantity_List, Order_num)
             updateFile1 (OrderMethod, Food_List, Price_List, Quantity_List, Order_num)
             takeout_list.append (Order_num)
-            Order_num = Order_num+ 1
+            Order_num = Order_num + 1
+
+        restaurant.waiter_authenticated = False
+        main_func()
 
 
 def delete_item (Food_List, Price_List, Quantity_List):
@@ -223,9 +232,6 @@ def delete_item (Food_List, Price_List, Quantity_List):
         del Food_List [deleteChoice-1]
         del Price_List [deleteChoice-1]
         del Quantity_List [deleteChoice-1]
-
-        for a in range (len(Food_List)):
-            print (Food_List[a])
     else:
         print ("Invalid input")
 
@@ -767,7 +773,16 @@ def Payment():  #make payment
         print("Invalid input")
     print(" ")
 
-    Payment()
+    main_func()
+
+
+global detail
+global customer
+global table_list
+global takeout_list
+global reservation
+global waiting
+global list_of_mainChoice
 
 detail = list ()
 customer = list()
@@ -775,31 +790,6 @@ table_list = list ()
 takeout_list = list ()
 reservation = dict ()
 waiting = dict ()
-list_of_mainChoice = [1,2,3,4,5,6]
-
-
-def ui():
-
-    print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Check List of Order\n4) Payment\n5) Menu\n6) Report\n7) Exit")
-    mainChoice = int (input ("Select an option:"))
-    print("  ")
-
-    if mainChoice == 1:
-        Order_num = Order_num+1
-        customerOrderPlacement (Order_num, table_list, takeout_list)
-    elif mainChoice == 2:
-        table_reservation ()
-    elif mainChoice == 3:
-        pending_order (table_list, takeout_list)
-    elif mainChoice == 4:
-        Payment ()
-    elif mainChoice == 5:
-        category=int(input("category"))
-        Menu(category)
-    elif mainChoice == 6:
-        Report()
-    #elif mainChoice == 7:
-        #break
 
 restaurant = Restaurant()
 
@@ -818,29 +808,57 @@ if(monthly_exists == False):
     file2.close()
     print("Monthly Report Created")
 
-while True:
-    restaurant.main()
 
-'''
-    print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Check List of Order\n4) Payment\n5) Menu\n6) Report\n7) Exit")
-    mainChoice = int (input ("Select an option:"))
-    print("  ")
+menu = Menu()
+restaurant = Restaurant()
 
-    if mainChoice == 1:
-        Order_num = customerOrderPlacement (Order_num, table_list, takeout_list)
-    elif mainChoice == 2:
-        table_reservation ()
-    elif mainChoice == 3:
-        pending_order (table_list, takeout_list)
-    elif mainChoice == 4:
-        Payment ()
-    elif mainChoice == 5:
-        restaurant.main()
-    elif mainChoice == 6:
-        Report()
-    elif mainChoice == 7:
-        break
+global Order_num
+Order_num = 0
 
-    if mainChoice not in list_of_mainChoice:
-        print ("Invalid Input")
-'''
+def main_func():
+    global Order_num
+    Order_num=Order_num+1
+    print("\n***Welcome to Restaurant M-01***\n")
+    print("1. Customers")
+    print("2. Waiters")
+    print("3. Exit\n")
+    choice = input("Please enter your choice (1-3):")
+
+    if choice == "1":
+        restaurant.customer_ui()
+    elif choice == "2":
+        if not restaurant.waiter_authenticated:
+            password = input("Please enter password:")
+            if password == "123456":
+                restaurant.waiter_authenticated = True
+            else:
+                print("Invalid password")
+
+        print ("Main Menu:\n1) Order\n2) Table Reservation\n3) Check List of Order\n4) Menu\n5) Report\n6) Exit")
+        mainChoice = int (input ("Select an option:"))
+        print("  ")
+
+        if mainChoice == 1:
+            customerOrderPlacement (Order_num, table_list, takeout_list)
+        elif mainChoice == 2:
+            table_reservation ()
+        elif mainChoice == 3:
+            pending_order (table_list, takeout_list)
+        elif mainChoice == 4:
+            restaurant.waiter_ui()
+        elif mainChoice == 5:
+            Report()
+        elif mainChoice == 6:
+            restaurant.waiter_authenticated = False
+            main_func()
+
+        if mainChoice not in list_of_mainChoice:
+            print ("Invalid Input")
+
+    elif choice == "3":
+        return 0
+
+main_func()
+
+
+
